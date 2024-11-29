@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Notauthorized.module.css";
+import styles from "./NotAuthorized.module.css";
 
 const NotAuthorized: React.FC = () => {
   return (
