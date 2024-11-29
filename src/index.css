@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01" on, "ss02" on, "cv01" on, "cv02" on,
+      "cv03" on, "cv04" on;
+  }
+}
+
+.glass-panel {
+  @apply bg-white/80 backdrop-blur-lg border border-white/20;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  @apply bg-muted/20;
+}
+
+.calendar-day {
+  @apply aspect-square flex items-center justify-center relative bg-background transition-all duration-200;
+}
+
+.calendar-day:hover {
+  @apply bg-secondary;
+}
+
+.calendar-day.selected {
+  @apply bg-accent text-white;
+}
+
+.calendar-day.today {
+  @apply font-semibold;
+}
+
+.calendar-day.different-month {
+  @apply text-muted-foreground;
+}
+
+.event-dot {
+  @apply w-1.5 h-1.5 rounded-full bg-accent absolute bottom-2;
+}

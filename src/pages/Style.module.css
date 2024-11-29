@@ -1,0 +1,28 @@
+.main{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0px 10px;
+}
+
+
+.list{
+    min-width: 50%;
+}
+
+.event{
+    min-width: 50%;
+    margin: 0;
+    padding: 0;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn{
+    margin-right: 10px;
+}
