@@ -42,7 +42,11 @@ const CommunicationCalendar = () => {
   const [comapanyWithEvents, setcomapanyWithEvents] = useState([]);
 
   // Mock dates with communications
-  const [communicationDates, setCommunicationDates] = React.useState([]);
+  const [lastcommunicationDates, setlastcommunicationDates] = React.useState(
+    []
+  );
+  const [upcommingcommunicationDates, setupcommingcommunicationDates] =
+    React.useState([]);
 
   // Mock events data with past and upcoming communications
   const [events, setEvents] = React.useState({});
@@ -75,12 +79,13 @@ const CommunicationCalendar = () => {
         // Create a new Date object using the year, month, and day
         const newDate = new Date(year, month, day);
 
-        const comdates = communicationDates;
-        comdates.push(newDate);
-        setCommunicationDates(comdates);
+        // const comdates = communicationDates;
+        // comdates.push(newDate);
+        // setCommunicationDates(comdates);
 
         // Classify the event based on the eventDate compared to the currentDate
         if (eventDate < currentDate) {
+          setlastcommunicationDates((prev) => [...prev, eventDate]);
           acc[companyName].last.push({
             name: communication.name,
             description: communication.description,
@@ -88,6 +93,7 @@ const CommunicationCalendar = () => {
             date: communication.date,
           }); // Past event
         } else {
+          setupcommingcommunicationDates((prev) => [...prev, eventDate]);
           acc[companyName].upcoming.push({
             name: communication.name,
             description: communication.description,
@@ -99,10 +105,16 @@ const CommunicationCalendar = () => {
         return acc;
       }, {});
       setcomapanyWithEvents(groupedByCompany);
+      console.log(
+        "Last : ",
+        lastcommunicationDates,
+        "Upcoming : ",
+        upcommingcommunicationDates
+      );
     } catch (error) {
       console.error("Error in getting all the events : ", error);
     }
-  }, []);;
+  }, []);
 
   useEffect(() => {
     getallevents();
@@ -142,7 +154,6 @@ const CommunicationCalendar = () => {
     };
 
     setEvents(updatedEvents);
-    setCommunicationDates((prev) => [...prev, date]);
     setShowAddEventDialog(false);
     setNewEvent({ type: "", company: "", notes: "" });
   };
@@ -206,8 +217,12 @@ const CommunicationCalendar = () => {
                     selected={date}
                     onSelect={handleDateSelect}
                     modifiers={{
-                      communication: communicationDates,
-                      hasEvent: communicationDates.filter(
+                      lastcommunication: lastcommunicationDates,
+                      upcomingcommunication: upcommingcommunicationDates,
+                      lastEvent: lastcommunicationDates.filter(
+                        (d) => !disabledEvents.includes(format(d, "yyyy-MM-dd"))
+                      ),
+                      upcomingEvent: upcommingcommunicationDates.filter(
                         (d) => !disabledEvents.includes(format(d, "yyyy-MM-dd"))
                       ),
                     }}
@@ -217,10 +232,21 @@ const CommunicationCalendar = () => {
                         color: "#1A1F2C",
                         borderRadius: "50%",
                       },
-                      hasEvent: {
-                        backgroundColor: "#9b87f5",
+                      lastEvent: {
+                        backgroundColor: "#FF0000",
                         color: "white",
                         borderRadius: "50%",
+                      },
+                      upcomingEvent: {
+                        backgroundColor: "#fed24a",
+                        color: "black",
+                        borderRadius: "50%",
+                      },
+                      selected: {
+                        backgroundColor: "#6fa8dc",
+                        color: "black",
+                        borderRadius: "50%",
+                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
                       },
                     }}
                     className="rounded-md border"
@@ -247,40 +273,16 @@ const CommunicationCalendar = () => {
                   </div>
                 </div>
 
-                <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        {date ? format(date, "MMMM d, yyyy") : "Select a date"}
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-2">
-                      {getEventsForDate(date).map((event, index) => (
-                        <EventCard
-                          key={index}
-                          event={event}
-                          dateKey={date ? format(date, "yyyy-MM-dd") : ""}
-                        />
-                      ))}
-                      {date && getEventsForDate(date).length === 0 && (
-                        <p className="text-sm text-muted-foreground">
-                          No events for this date
-                        </p>
-                      )}
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
                 <Dialog
                   open={showAddEventDialog}
                   onOpenChange={setShowAddEventDialog}
                 >
-                  <DialogContent>
+                  <DialogContent className="bg-gray-300">
                     <DialogHeader>
                       <DialogTitle>Add New Event</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <div>
+                      <div className="bg-gray-300">
                         <Select
                           value={newEvent.type}
                           onValueChange={(value) =>
@@ -334,7 +336,7 @@ const CommunicationCalendar = () => {
             </div>
             <div>
               <CardContent>
-                <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>
@@ -356,7 +358,7 @@ const CommunicationCalendar = () => {
                       )}
                     </div>
                   </DialogContent>
-                </Dialog>
+                </Dialog> */}
 
                 <Dialog
                   open={showAddEventDialog}
