@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft } from "lucide-react";
-import { auth } from "../services/api";
+import { auth } from "../services/api.js";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/index.js";
-import { setUser } from "../redux/slices/user";
+import { setUser } from "../redux/slices/user/index.js";
 
-const SignIn = () => {
+const AdminSignIn = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +21,6 @@ const SignIn = () => {
       document.getElementById("btn").innerText = "Signing in...";
       const res = await auth.login(email, password);
       document.getElementById("btn").innerText = "Sign In";
-      console.log(res);
       if (!res || !res.token) {
         toast({
           variant: "destructive",
@@ -30,8 +29,15 @@ const SignIn = () => {
         });
         return;
       }
+      if (res?.role !== "admin") {
+        toast({
+          title: "Error",
+          description: "You have to login with admin account.",
+        });
+        return;
+      }
       toast({
-        title: "Success",
+        title: "Error",
         description: "You have successfully signed in.",
       });
       localStorage.setItem("entnttoken", res?.token);
@@ -42,7 +48,6 @@ const SignIn = () => {
         navigate("/user");
       }
     } catch (error) {
-      console.log("Error : ",error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -99,17 +104,10 @@ const SignIn = () => {
               Sign In
             </Button>
           </form>
-
-          <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-primary hover:underline">
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </div>
   );
 };
 
-export default SignIn;
+export default AdminSignIn;

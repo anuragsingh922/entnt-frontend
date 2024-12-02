@@ -28,8 +28,15 @@ import NotificationBadge from "./NotificationBadge";
 import CompanyList from "./CompanyList";
 import styles from "./Style.module.css";
 import { communications } from "@/services/api";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/index.js";
+import { setselectedCompanies } from "../redux/slices/selectedCompanies/index.js";
 
 const CommunicationCalendar = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const scomapnies = useAppSelector((state) => state.selectedCompanies);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [showDialog, setShowDialog] = React.useState(false);
   const [showAddEventDialog, setShowAddEventDialog] = React.useState(false);
@@ -41,15 +48,14 @@ const CommunicationCalendar = () => {
   });
   const [comapanyWithEvents, setcomapanyWithEvents] = useState([]);
 
-  // Mock dates with communications
   const [lastcommunicationDates, setlastcommunicationDates] = React.useState(
     []
   );
   const [upcommingcommunicationDates, setupcommingcommunicationDates] =
     React.useState([]);
 
-  // Mock events data with past and upcoming communications
   const [events, setEvents] = React.useState({});
+  const [allcompany, setallcompany] = React.useState([]);
 
   const getallevents = useCallback(async () => {
     try {
@@ -67,17 +73,12 @@ const CommunicationCalendar = () => {
             upcoming: [],
             current: [],
           };
+          const allcompanySet = new Set(allcompany);
+          allcompanySet.add(companyName);
+          setallcompany(Array.from(allcompanySet));
         }
 
         const eventDate = new Date(communication.date);
-
-        // Extract the year, month, and day from the ISO date
-        const year = eventDate.getUTCFullYear();
-        const month = eventDate.getUTCMonth(); // Months are 0-indexed, so November (11) becomes 10
-        const day = eventDate.getUTCDate();
-
-        // Create a new Date object using the year, month, and day
-        const newDate = new Date(year, month, day);
 
         // const comdates = communicationDates;
         // comdates.push(newDate);
@@ -91,6 +92,7 @@ const CommunicationCalendar = () => {
             description: communication.description,
             mandatoryFlag: communication.mandatoryFlag,
             date: communication.date,
+            companyName: companyName,
           }); // Past event
         } else {
           setupcommingcommunicationDates((prev) => [...prev, eventDate]);
@@ -99,12 +101,14 @@ const CommunicationCalendar = () => {
             description: communication.description,
             mandatoryFlag: communication.mandatoryFlag,
             date: communication.date,
+            companyName: companyName,
           });
         }
 
         return acc;
       }, {});
       setcomapanyWithEvents(groupedByCompany);
+      dispatch(setselectedCompanies(allcompany));
     } catch (error) {
       console.error("Error in getting all the events : ", error);
     }
@@ -195,6 +199,17 @@ const CommunicationCalendar = () => {
               Add Event
             </Button>
             <NotificationBadge />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-2"
+              onClick={() => {
+                localStorage.removeItem("entnttoken");
+                navigate("/");
+              }}
+            >
+              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+            </Button>
           </div>
         </CardHeader>
 
@@ -214,10 +229,12 @@ const CommunicationCalendar = () => {
                       lastcommunication: lastcommunicationDates,
                       upcomingcommunication: upcommingcommunicationDates,
                       lastEvent: lastcommunicationDates.filter(
-                        (d) => !disabledEvents.includes(format(d, "yyyy-MM-dd"))
-                      ),
+                        (d) =>
+                          !disabledEvents.includes(format(d, "yyyy-MM-dd"))
+                      ),                      
                       upcomingEvent: upcommingcommunicationDates.filter(
-                        (d) => !disabledEvents.includes(format(d, "yyyy-MM-dd"))
+                        (d) =>
+                          !disabledEvents.includes(format(d, "yyyy-MM-dd"))
                       ),
                     }}
                     modifiersStyles={{

@@ -9,6 +9,9 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <h1 className="text-xl sm:text-2xl font-bold">Sync Schedule Guru</h1>
           <div className="space-x-2 sm:space-x-4">
+            <Link to="/adminsignin">
+              <Button variant="ghost">Admin Login</Button>
+            </Link>
             <Link to="/signin">
               <Button variant="ghost">Sign In</Button>
             </Link>

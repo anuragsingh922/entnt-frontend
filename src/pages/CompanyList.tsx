@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Badge } from "../components/ui/badge";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { Checkbox } from "../components/ui/checkbox";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/index.js";
+import { setselectedCompanies } from "../redux/slices/selectedCompanies/index.js";
 
 interface Communication {
   type: string;
@@ -17,42 +19,6 @@ interface Company {
   status: "overdue" | "due" | "normal";
 }
 
-// Mock data
-const companies: Company[] = [
-  {
-    id: "1",
-    name: "Apple Inc.",
-    lastCommunications: [
-      {
-        type: "LinkedIn Post",
-        date: "2024-04-05",
-        notes: "Product launch announcement",
-      },
-      { type: "Email", date: "2024-04-01", notes: "Follow-up meeting" },
-    ],
-    nextCommunication: { type: "Email", date: "2024-04-10" },
-    status: "due",
-  },
-  {
-    id: "2",
-    name: "Microsoft",
-    lastCommunications: [
-      { type: "Email", date: "2024-04-03", notes: "Partnership discussion" },
-    ],
-    nextCommunication: { type: "LinkedIn Post", date: "2024-04-15" },
-    status: "normal",
-  },
-  {
-    id: "3",
-    name: "Google",
-    lastCommunications: [
-      { type: "LinkedIn Post", date: "2024-03-28", notes: "Tech conference" },
-    ],
-    nextCommunication: { type: "Email", date: "2024-04-01" },
-    status: "overdue",
-  },
-];
-
 interface CompanyEvents {
   name: string;
   last: Event[];
@@ -65,20 +31,12 @@ interface CompanyWithEvents {
 }
 
 const CompanyList = ({ list }: { list: CompanyWithEvents }) => {
+  const dispatch = useAppDispatch();
+  const scompanies = useAppSelector((state) => state.selectedCompanies);
+  dispatch(setselectedCompanies());
   const [selectedCompanies, setSelectedCompanies] = React.useState<string[]>(
     []
   );
-
-  const getStatusColor = (status: Company["status"]) => {
-    switch (status) {
-      case "overdue":
-        return "bg-destructive/10 text-destructive border-destructive/20";
-      case "due":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      default:
-        return "bg-secondary text-secondary-foreground";
-    }
-  };
 
   const handleCompanySelect = (companyId: string) => {
     setSelectedCompanies((prev) =>
@@ -86,6 +44,8 @@ const CompanyList = ({ list }: { list: CompanyWithEvents }) => {
         ? prev.filter((id) => id !== companyId)
         : [...prev, companyId]
     );
+    dispatch(setselectedCompanies(selectedCompanies));
+    console.log(scompanies);
   };
 
   return (
@@ -115,14 +75,14 @@ const CompanyList = ({ list }: { list: CompanyWithEvents }) => {
                 <span className="font-medium">Last Communications:</span>
                 <div className="mt-1 space-y-1">
                   {Array.isArray(events.last) && events.last.length > 0
-                    ? events.last.map((event, index) => (
+                    ? events.last.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between text-xs"
+                          className="flex items-center justify-between text-xs bg-red-200 rounded-sm p-2"
                         >
-                          <span>{event.name}</span>
+                          <span className="text-black-800">{item.name}</span>
                           <span>
-                            {new Date(event.date).toLocaleDateString()}
+                            {new Date(item.date).toLocaleDateString()}
                           </span>
                         </div>
                       ))
@@ -134,14 +94,14 @@ const CompanyList = ({ list }: { list: CompanyWithEvents }) => {
                 <span className="font-medium">Next Communications:</span>
                 <div className="mt-1 space-y-1">
                   {Array.isArray(events.upcoming) && events.upcoming.length > 0
-                    ? events.upcoming.map((event, index) => (
+                    ? events.upcoming.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between text-xs"
+                          className="flex items-center justify-between text-xs bg-yellow-300 rounded-sm p-2"
                         >
-                          <span>{event.name}</span>
+                          <span>{item.name}</span>
                           <span>
-                            {new Date(event.date).toLocaleDateString()}
+                            {new Date(item.date).toLocaleDateString()}
                           </span>
                         </div>
                       ))

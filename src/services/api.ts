@@ -23,6 +23,10 @@ export const auth = {
     const response = await api.post("/auth/login", { email, password });
     return response.data;
   },
+  adminlogin: async (email: string, password: string , admin : boolean) => {
+    const response = await api.post("/auth/adminlogin", { email, password , admin });
+    return response.data;
+  },
   verify: async () => {
     const response = await api.get("/auth/verify");
     return response;

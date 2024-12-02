@@ -17,26 +17,26 @@ const NotificationBadge = () => {
   const totalCount = overdueCount + dueTodayCount;
 
   const overdueNotifications = [
-    { company: "Acme Corp", type: "Email", dueDate: "2024-03-15" }
+    { company: "speakr", type: "Email", dueDate: "2024-03-15" }
   ];
 
   const todayNotifications = [
-    { company: "TechStart Inc", type: "LinkedIn Post", dueDate: "2024-03-20" }
+    { company: "Accintia", type: "LinkedIn Post", dueDate: "2024-03-20" }
   ];
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button variant="ghost" className="relative text-black">
+          <Bell className="h-5 w-5 " />
           {totalCount > 0 && (
-            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-xs text-white flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-xs flex items-center justify-center text-black">
               {totalCount}
             </span>
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80">
+      <DropdownMenuContent className="w-80 bg-white">
         <DropdownMenuLabel>Notifications</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

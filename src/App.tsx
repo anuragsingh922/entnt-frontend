@@ -14,9 +14,9 @@ import AdminCommunication from "./pages/AdminCommunication";
 import ProtectedRoute from "./ProtectedRoute";
 import NotAuthorized from "./pages/NotAuthorized";
 import Verify from "./Verify";
+import AdminSignIn from "./pages/AdminSignIn";
 
 const queryClient = new QueryClient();
-
 
 const App = () => {
   return (
@@ -26,8 +26,16 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Verify><Index /></Verify>} />
+            <Route
+              path="/"
+              element={
+                <Verify>
+                  <Index />
+                </Verify>
+              }
+            />
             <Route path="/signin" element={<SignIn />} />
+            <Route path="/adminsignin" element={<AdminSignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/unauthorized" element={<NotAuthorized />} />
