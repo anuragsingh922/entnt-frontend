@@ -7,6 +7,17 @@ const Verify = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
+  const removetoken = () => {
+    try {
+      const token = localStorage.getItem("entnttoken");
+      if (token) {
+        localStorage.removeItem("entnttoken");
+      }
+    } catch (error) {
+      console.error("Error in removing token : ", error);
+    }
+  };
+
   useEffect(() => {
     const verify = async () => {
       try {
@@ -22,10 +33,8 @@ const Verify = ({ children }) => {
 
         if (user?.status !== 200 || !user?.data) {
           localStorage.removeItem("entnttoken");
-          return navigate("/unauthorized");
+          return navigate("/signin");
         }
-
-        console.log("User : " , user);
 
         localStorage.setItem("identnt", user?.data?.id);
         setIsAuthorized(true);
@@ -38,7 +47,8 @@ const Verify = ({ children }) => {
       } catch (error) {
         console.error("Error in verification:", error);
         setIsLoading(false);
-        navigate("/unauthorized");
+        removetoken();
+        navigate("/signin");
       }
     };
 

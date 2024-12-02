@@ -105,12 +105,6 @@ const CommunicationCalendar = () => {
         return acc;
       }, {});
       setcomapanyWithEvents(groupedByCompany);
-      console.log(
-        "Last : ",
-        lastcommunicationDates,
-        "Upcoming : ",
-        upcommingcommunicationDates
-      );
     } catch (error) {
       console.error("Error in getting all the events : ", error);
     }

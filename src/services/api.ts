@@ -72,8 +72,8 @@ export const communications = {
     const response = await api.post("/communications", companyData);
     return response.data;
   },
-  update: async (email: string, companyData: object) => {
-    const response = await api.put(`/communications/${email}`, companyData);
+  update: async (id: string, companyData: object) => {
+    const response = await api.put(`/communications/${id}`, companyData);
     return response.data;
   },
   delete: async (email: string) => {

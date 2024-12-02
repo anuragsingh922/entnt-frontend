@@ -32,7 +32,6 @@ const SignIn = () => {
         description: "You have successfully signed in.",
       });
       localStorage.setItem("entnttoken", res?.token);
-      console.log(res);
       dispatch(setUser(res));
       if (res?.role === "admin") {
         navigate("/admin");

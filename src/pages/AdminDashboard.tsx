@@ -27,7 +27,10 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const [companie, setcompanie] = useState([]);
   const [addcompany, setaddcompany] = useState(false);
-  const [companydetails, setcompanydetails] = useState<CompanyDetails>({
+  const [companyID, setcompanyID] = useState("");
+  const [update, setupdate] = useState(false);
+
+  const defaultCompanyDetails = {
     name: "",
     location: "",
     linkedinProfile: "",
@@ -35,7 +38,10 @@ const UserDashboard = () => {
     phoneNumbers: "",
     comments: "",
     communicationPeriodicity: "",
-  });
+  };
+  const [companydetails, setcompanydetails] = useState<CompanyDetails>(
+    defaultCompanyDetails
+  );
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,7 +64,6 @@ const UserDashboard = () => {
       if (result) {
         setcompanie(result);
       }
-      console.log("Company : ", result);
     } catch (error) {
       console.error("Error in geting all company : ", error);
     }
@@ -71,8 +76,11 @@ const UserDashboard = () => {
   const handlesubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      if (update) return;
       setaddcompany(false);
+      document.getElementById("addbtn").innerText = "Adding...";
       await companies.create(companydetails);
+      document.getElementById("addbtn").innerText = "Add";
       getallcompany();
     } catch (error) {
       console.error("Error in company creation : ", error);
@@ -81,12 +89,23 @@ const UserDashboard = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      console.log("Name : ", id);
       await companies.delete(id);
       getallcompany();
-      console.log("Done");
     } catch (error) {
-      console.log("Erorr in delete company : ", error);
+      console.error("Erorr in delete company : ", error);
+    }
+  };
+
+  const updateCompany = async (id: string, companydetails: object) => {
+    try {
+      document.getElementById("updatebtn").innerText = "Updating...";
+      await companies.update(id, companydetails);
+      document.getElementById("updatebtn").innerText = "Update";
+      setaddcompany(false);
+      setupdate(false);
+      getallcompany();
+    } catch (error) {
+      console.error("Error in update Company : ", error);
     }
   };
 
@@ -123,6 +142,7 @@ const UserDashboard = () => {
               </div>
               <Button
                 onClick={() => {
+                  setcompanydetails(defaultCompanyDetails);
                   setaddcompany(true);
                 }}
               >
@@ -149,12 +169,7 @@ const UserDashboard = () => {
                     companie.map((item, index) => {
                       return (
                         <>
-                          <TableRow
-                            key={index}
-                            onClick={() => {
-                              navigate(`/communication/${item?._id}`);
-                            }}
-                          >
+                          <TableRow key={index}>
                             <TableCell className="font-medium">
                               {item.name}
                             </TableCell>
@@ -167,7 +182,16 @@ const UserDashboard = () => {
                               {item?.communicationPeriodicity}
                             </TableCell>
                             <TableCell>
-                              <Button variant="ghost" size="sm">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setaddcompany(true);
+                                  setupdate(true);
+                                  setcompanydetails(item);
+                                  setcompanyID(item._id);
+                                }}
+                              >
                                 Edit
                               </Button>
                             </TableCell>
@@ -297,10 +321,21 @@ const UserDashboard = () => {
                   required
                 />
               </div>
-
-              <Button type="submit" className="w-full">
-                ADD
-              </Button>
+              {update ? (
+                <Button
+                  className="w-full"
+                  id="updatebtn"
+                  onClick={() => {
+                    updateCompany(companyID, companydetails);
+                  }}
+                >
+                  Update
+                </Button>
+              ) : (
+                <Button type="submit" className="w-full" id="addbtn">
+                  ADD
+                </Button>
+              )}
               <Button
                 className="w-full"
                 onClick={() => {

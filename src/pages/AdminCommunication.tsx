@@ -12,13 +12,14 @@ import { LogOut, Search, UserPlus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, communications } from "../services/api";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CommunicationDetails {
   company: string;
   name: string;
   description: string;
   sequence: string;
-  mandatoryFlag: string;
+  mandatoryFlag: boolean;
   date: string;
   performedBy: string;
 }
@@ -31,15 +32,16 @@ const AdminCommunication = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [companie, setcompanie] = useState([]);
+  const [update, setupdate] = useState(false);
+  const [_id, set_id] = useState("");
   const [addcommunication, setaddcommunication] = useState(false);
-  console.log("Date : ", new Date().getFullYear());
   const defaultcommunicationDetails = {
     company: id,
     name: "",
     description: "",
     sequence:
       "LinkedIn Post -> LinkedIn Message -> Email -> Phone Call -> Other",
-    mandatoryFlag: "",
+    mandatoryFlag: false,
     date: formatDate(new Date()),
     performedBy: localStorage.getItem("identnt"),
   };
@@ -51,11 +53,11 @@ const AdminCommunication = () => {
   ) => {
     try {
       const { name, value } = e.target;
+      console.log({ name, value });
       setcommunicationDetails((prevDetails) => ({
-        ...prevDetails, // Spread the previous state
-        [name]: name === "date" ? formatDate((new Date(value))) : value,
+        ...prevDetails,
+        [name]: name === "date" ? formatDate(new Date(value)) : value,
       }));
-      console.log(communicationDetails);
     } catch (error) {
       console.error("Error in change: ", error);
     }
@@ -67,7 +69,6 @@ const AdminCommunication = () => {
       if (result) {
         setcompanie(result);
       }
-      console.log("Company : ", result);
     } catch (error) {
       console.error("Error in geting all company : ", error);
     }
@@ -80,8 +81,11 @@ const AdminCommunication = () => {
   const handlesubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      if (update) return;
       setaddcommunication(false);
+      document.getElementById("addbtn").innerText = "Adding...";
       await communications.create(communicationDetails);
+      document.getElementById("addbtn").innerText = "Add";
       getallcommunication();
       setcommunicationDetails(defaultcommunicationDetails);
     } catch (error) {
@@ -91,12 +95,23 @@ const AdminCommunication = () => {
 
   const handleDelete = async (email: string) => {
     try {
-      console.log("Name : ", email);
       await communications.delete(email);
       getallcommunication();
-      console.log("Done");
     } catch (error) {
-      console.log("Erorr in delete company : ", error);
+      console.error("Erorr in delete company : ", error);
+    }
+  };
+
+  const handleupdate = async (id: string) => {
+    try {
+      document.getElementById("updatebtn").innerText = "Updating...";
+      await communications.update(id, communicationDetails);
+      document.getElementById("updatebtn").innerText = "Update";
+      setupdate(false);
+      setaddcommunication(false);
+      getallcommunication();
+    } catch (error) {
+      console.error("Error in handle update : ", error);
     }
   };
 
@@ -134,7 +149,7 @@ const AdminCommunication = () => {
               <Button
                 onClick={() => {
                   setaddcommunication(true);
-                  console.log("True");
+                  setcommunicationDetails(defaultcommunicationDetails);
                 }}
               >
                 <UserPlus className="w-4 h-4 mr-2" /> Add Communication
@@ -157,9 +172,7 @@ const AdminCommunication = () => {
                     companie.map((item, index) => {
                       return (
                         <>
-                          <TableRow
-                            key={index}
-                          >
+                          <TableRow key={index}>
                             <TableCell className="font-medium">
                               {item.name}
                             </TableCell>
@@ -169,7 +182,22 @@ const AdminCommunication = () => {
                               {item?.mandatoryFlag === true ? "True" : "False"}
                             </TableCell>
                             <TableCell>
-                              <Button variant="ghost" size="sm">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  setaddcommunication(true);
+                                  setupdate(true);
+                                  console.log(item);
+                                  const tempitem = item;
+                                  tempitem.date = formatDate(
+                                    new Date(item.date)
+                                  );
+                                  console.log(tempitem.date);
+                                  setcommunicationDetails(tempitem);
+                                  set_id(item?._id);
+                                }}
+                              >
                                 Edit
                               </Button>
                             </TableCell>
@@ -253,7 +281,7 @@ const AdminCommunication = () => {
                   className="input-field"
                 />
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <label htmlFor="mandatoryFlag" className="text-sm font-medium">
                   Mandatory Flag
                 </label>
@@ -288,11 +316,40 @@ const AdminCommunication = () => {
                     <span className="ml-2">False</span>
                   </label>
                 </div>
+              </div> */}
+
+              <div className="flex items-center space-x-4">
+                <label htmlFor="date" className="text-sm font-medium">
+                  Mandatory
+                </label>
+                <Checkbox
+                  checked={communicationDetails.mandatoryFlag}
+                  onClick={() => {
+                    setcommunicationDetails((prevDetails) => ({
+                      ...prevDetails,
+                      mandatoryFlag: !prevDetails.mandatoryFlag,
+                    }));
+                  }}
+                  id="mandatoryFlag"
+                  name="mandatoryFlag"
+                />
               </div>
 
-              <Button type="submit" className="w-full">
-                ADD
-              </Button>
+              {update ? (
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    handleupdate(_id);
+                  }}
+                  id="updatebtn"
+                >
+                  Update
+                </Button>
+              ) : (
+                <Button type="submit" className="w-full" id="addbtn">
+                  ADD
+                </Button>
+              )}
               <Button
                 className="w-full"
                 onClick={() => {
