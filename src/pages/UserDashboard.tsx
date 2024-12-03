@@ -65,7 +65,6 @@ const CommunicationCalendar = () => {
         const companyName = communication.company.name;
         const currentDate = new Date();
 
-        // Initialize the company object with last, upcoming, and current arrays if it doesn't exist
         if (!acc[companyName]) {
           acc[companyName] = {
             name: companyName,
@@ -73,9 +72,9 @@ const CommunicationCalendar = () => {
             upcoming: [],
             current: [],
           };
-          const allcompanySet = new Set(allcompany);
-          allcompanySet.add(companyName);
-          setallcompany(Array.from(allcompanySet));
+          // const allcompanySet = new Set(allcompany);
+          // allcompanySet.add(companyName);
+          // setallcompany(Array.from(allcompanySet));
         }
 
         const eventDate = new Date(communication.date);
@@ -84,7 +83,6 @@ const CommunicationCalendar = () => {
         // comdates.push(newDate);
         // setCommunicationDates(comdates);
 
-        // Classify the event based on the eventDate compared to the currentDate
         if (eventDate < currentDate) {
           setlastcommunicationDates((prev) => [...prev, eventDate]);
           acc[companyName].last.push({
@@ -108,7 +106,7 @@ const CommunicationCalendar = () => {
         return acc;
       }, {});
       setcomapanyWithEvents(groupedByCompany);
-      dispatch(setselectedCompanies(allcompany));
+      // dispatch(setselectedCompanies(allcompany));
     } catch (error) {
       console.error("Error in getting all the events : ", error);
     }

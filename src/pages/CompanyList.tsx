@@ -31,9 +31,9 @@ interface CompanyWithEvents {
 }
 
 const CompanyList = ({ list }: { list: CompanyWithEvents }) => {
-  const dispatch = useAppDispatch();
-  const scompanies = useAppSelector((state) => state.selectedCompanies);
-  dispatch(setselectedCompanies());
+  // const dispatch = useAppDispatch();
+  // const scompanies = useAppSelector((state) => state.selectedCompanies);
+  // dispatch(setselectedCompanies());
   const [selectedCompanies, setSelectedCompanies] = React.useState<string[]>(
     []
   );
@@ -44,8 +44,8 @@ const CompanyList = ({ list }: { list: CompanyWithEvents }) => {
         ? prev.filter((id) => id !== companyId)
         : [...prev, companyId]
     );
-    dispatch(setselectedCompanies(selectedCompanies));
-    console.log(scompanies);
+    // dispatch(setselectedCompanies(selectedCompanies));
+    // console.log(scompanies);
   };
 
   return (
