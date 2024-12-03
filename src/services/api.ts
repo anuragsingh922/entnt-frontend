@@ -80,8 +80,8 @@ export const communications = {
     const response = await api.put(`/communications/${id}`, companyData);
     return response.data;
   },
-  delete: async (email: string) => {
-    const response = await api.delete(`/communications/${email}`);
+  delete: async (id: string) => {
+    const response = await api.delete(`/communications/${id}`);
     return response.data;
   },
 };

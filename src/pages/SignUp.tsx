@@ -44,7 +44,7 @@ const SignUp = () => {
           <div className="text-center">
             <h1 className="text-3xl font-bold">Create an account</h1>
             <p className="text-muted-foreground mt-2">
-              Get started with Sync Schedule Guru
+              Get started with TNP Managment
             </p>
           </div>
 

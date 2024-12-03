@@ -78,9 +78,9 @@ const UserDashboard = () => {
       e.preventDefault();
       if (update) return;
       setaddcompany(false);
-      document.getElementById("addbtn").innerText = "Adding...";
+      // document.getElementById("addbtn").innerText = "Adding...";
       await companies.create(companydetails);
-      document.getElementById("addbtn").innerText = "Add";
+      // document.getElementById("addbtn").innerText = "Add";
       getallcompany();
     } catch (error) {
       console.error("Error in company creation : ", error);
@@ -98,9 +98,9 @@ const UserDashboard = () => {
 
   const updateCompany = async (id: string, companydetails: object) => {
     try {
-      document.getElementById("updatebtn").innerText = "Updating...";
+      // document.getElementById("updatebtn").innerText = "Updating...";
       await companies.update(id, companydetails);
-      document.getElementById("updatebtn").innerText = "Update";
+      // document.getElementById("updatebtn").innerText = "Update";
       setaddcompany(false);
       setupdate(false);
       getallcompany();

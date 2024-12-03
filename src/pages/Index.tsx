@@ -7,7 +7,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <nav className="border-b">
         <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <h1 className="text-xl sm:text-2xl font-bold">Sync Schedule Guru</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">TNP Managment</h1>
           <div className="space-x-2 sm:space-x-4">
             <Link to="/adminsignin">
               <Button variant="ghost">Admin Login</Button>
@@ -71,7 +71,7 @@ const Index = () => {
 
       <footer className="border-t py-6 sm:py-8">
         <div className="container mx-auto px-4 text-center text-sm sm:text-base text-muted-foreground">
-          © 2024 Sync Schedule Guru. All rights reserved.
+          © 2024 TNP Managment. All rights reserved.
         </div>
       </footer>
     </div>

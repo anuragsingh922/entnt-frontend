@@ -29,9 +29,9 @@ const App = () => {
             <Route
               path="/"
               element={
-                <Verify>
+                // <Verify>
                   <Index />
-                </Verify>
+                // </Verify>
               }
             />
             <Route path="/signin" element={<SignIn />} />

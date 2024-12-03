@@ -18,9 +18,9 @@ const SignIn = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      document.getElementById("btn").innerText = "Signing in...";
+      // document.getElementById("btn").innerText = "Signing in...";
       const res = await auth.login(email, password);
-      document.getElementById("btn").innerText = "Sign In";
+      // document.getElementById("btn").innerText = "Sign In";
       console.log(res);
       if (!res || !res.token) {
         toast({

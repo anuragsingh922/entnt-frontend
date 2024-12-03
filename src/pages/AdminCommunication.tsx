@@ -68,6 +68,7 @@ const AdminCommunication = () => {
       const result = await communications.getAll(id);
       if (result) {
         setcompanie(result);
+        console.log(result);
       }
     } catch (error) {
       console.error("Error in geting all company : ", error);
@@ -83,9 +84,9 @@ const AdminCommunication = () => {
       e.preventDefault();
       if (update) return;
       setaddcommunication(false);
-      document.getElementById("addbtn").innerText = "Adding...";
+      // document.getElementById("addbtn").innerText = "Adding...";
       await communications.create(communicationDetails);
-      document.getElementById("addbtn").innerText = "Add";
+      // document.getElementById("addbtn").innerText = "Add";
       getallcommunication();
       setcommunicationDetails(defaultcommunicationDetails);
     } catch (error) {
@@ -93,9 +94,9 @@ const AdminCommunication = () => {
     }
   };
 
-  const handleDelete = async (email: string) => {
+  const handleDelete = async (id: string) => {
     try {
-      await communications.delete(email);
+      await communications.delete(id);
       getallcommunication();
     } catch (error) {
       console.error("Erorr in delete company : ", error);
@@ -104,9 +105,9 @@ const AdminCommunication = () => {
 
   const handleupdate = async (id: string) => {
     try {
-      document.getElementById("updatebtn").innerText = "Updating...";
+      // document.getElementById("updatebtn").innerText = "Updating...";
       await communications.update(id, communicationDetails);
-      document.getElementById("updatebtn").innerText = "Update";
+      // document.getElementById("updatebtn").innerText = "Update";
       setupdate(false);
       setaddcommunication(false);
       getallcommunication();
@@ -206,7 +207,7 @@ const AdminCommunication = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {
-                                  handleDelete(item?.emails);
+                                  handleDelete(item?._id);
                                 }}
                               >
                                 Delete
