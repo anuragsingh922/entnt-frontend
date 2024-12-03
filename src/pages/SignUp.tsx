@@ -16,7 +16,9 @@ const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      document.getElementById("signupbtn").innerText = "Signing Up..";
       await auth.register(name  , email , password);
+      document.getElementById("signupbtn").innerText = "Sign Up"
       toast({
         title: "Success",
         description: "Account created successfully. Please sign in.",
@@ -87,7 +89,7 @@ const SignUp = () => {
               />
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" id="signupbtn">
               Sign Up
             </Button>
           </form>
