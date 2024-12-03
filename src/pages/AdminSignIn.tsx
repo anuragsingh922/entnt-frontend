@@ -37,7 +37,7 @@ const AdminSignIn = () => {
         return;
       }
       toast({
-        title: "Error",
+        title: "Success",
         description: "You have successfully signed in.",
       });
       localStorage.setItem("entnttoken", res?.token);
